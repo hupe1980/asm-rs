@@ -1,0 +1,17 @@
+[package]
+name = "asm-rs-macros"
+description = "Compile-time assembly proc-macros for asm-rs"
+keywords = ["assembler", "macro", "shellcode", "compile-time"]
+categories = ["development-tools", "encoding"]
+readme = "README.md"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+asm-rs = { version = "0.1.0", path = "../asm-rs", default-features = true }

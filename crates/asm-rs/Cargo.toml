@@ -1,0 +1,50 @@
+[package]
+name = "asm-rs"
+description = "Pure Rust multi-architecture runtime assembly engine"
+keywords = ["assembler", "x86", "aarch64", "arm", "riscv"]
+categories = ["development-tools", "encoding", "no-std"]
+readme = "../../README.md"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = ["std", "x86", "x86_64", "arm", "aarch64", "riscv", "avx", "avx512", "neon", "riscv_f"]
+std = []
+x86 = []
+x86_64 = []
+arm = []
+aarch64 = []
+riscv = []
+avx = ["x86_64"]
+avx512 = ["x86_64"]
+neon = ["aarch64"]
+sve = ["aarch64"]
+riscv_f = ["riscv"]
+riscv_v = ["riscv"]
+serde = ["dep:serde"]
+
+[dependencies]
+serde = { version = "1", default-features = false, features = ["derive", "alloc", "rc"], optional = true }
+
+[dev-dependencies]
+serde_json = "1"
+proptest = "1"
+yaxpeax-arm = { version = "0.4", default-features = false }
+yaxpeax-arch = { version = "0.3", default-features = false }
+riscv-decode = "0.2"
+
+# Native-only dev-dependencies (C FFI or std-only crates that don't compile for WASM)
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+iced-x86 = { version = "1", default-features = false, features = ["std", "decoder", "intel"] }
+criterion = { version = "0.5", features = ["html_reports"] }
+bad64 = "0.12"
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[[bench]]
+name = "throughput"
+harness = false

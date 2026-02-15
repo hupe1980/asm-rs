@@ -1,0 +1,42 @@
+[package]
+name = "asm_rs-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.asm-rs]
+path = "../crates/asm-rs"
+features = ["std", "x86", "x86_64", "arm", "aarch64", "riscv", "riscv_f"]
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "fuzz_x86_64"
+path = "fuzz_targets/fuzz_x86_64.rs"
+doc = false
+
+[[bin]]
+name = "fuzz_arm"
+path = "fuzz_targets/fuzz_arm.rs"
+doc = false
+
+[[bin]]
+name = "fuzz_aarch64"
+path = "fuzz_targets/fuzz_aarch64.rs"
+doc = false
+
+[[bin]]
+name = "fuzz_riscv"
+path = "fuzz_targets/fuzz_riscv.rs"
+doc = false

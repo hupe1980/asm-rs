@@ -1,0 +1,14 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 4339451233999d7076ffc93789b59293e549197ea0c1b0e2e893b1ea3f53eadf # shrinks to insn = "mov r0, #0"
+cc 696bfa580f4074e7e810194f4e2e723bcd7694ad728da9d32c3b365171ae4511 # shrinks to val = 0
+cc afaa4f53fdbf7d1200a33d81b8d377bd0fd04d382b34e89451ffa6af7485111a # shrinks to insn = "lsl x0, x1, #1"
+cc d724fa384f8e9d2165fc938548b67eea0620ff2bf2c876f0586658a3e1f2e079 # shrinks to insn = "mov r0, #0"
+cc 1b2432e42dbab9113f1a316c03dd2009cf024a005c7e82bfbcec0dd0d814626a # shrinks to insn = "mov x0, #0"
+cc 9dd71e47710f992447ee66c8785acca2bd2e4029a17f675e9b8ce0ead4d4a42c # shrinks to insns = ["mov r0, #0"]
+cc dcbccc1b9c87c541f2e4ec5650c9a268156f2153c718c8762ce34373d516f07b # shrinks to insns = ["mov x0, #0"]
+cc 328197f816effb0ae93245008695e2d6c7dc971050d504a94c7b3d0119f8e482 # shrinks to input = "0:J"

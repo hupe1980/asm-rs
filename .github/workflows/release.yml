@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+
+permissions:
+  contents: write
+
+jobs:
+  # ── Pre-flight checks ────────────────────────────────────
+  ci:
+    name: CI checks
+    uses: ./.github/workflows/ci.yml
+
+  # ── Publish to crates.io ─────────────────────────────────
+  publish:
+    name: publish
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: crates-io
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # Verify the tag version matches Cargo.toml
+      - name: Verify version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          CARGO_VERSION=$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "asm-rs") | .version')
+          if [ "$TAG_VERSION" != "$CARGO_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match Cargo.toml version ($CARGO_VERSION)"
+            exit 1
+          fi
+          echo "Publishing version $TAG_VERSION"
+
+      # Publish asm-rs first (asm-rs-macros depends on it)
+      - name: Publish asm-rs
+        run: cargo publish -p asm-rs
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      # Wait for crates.io index to update
+      - name: Wait for index propagation
+        run: sleep 30
+
+      # Publish asm-rs-macros
+      - name: Publish asm-rs-macros
+        run: cargo publish -p asm-rs-macros
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  # ── Create GitHub release ────────────────────────────────
+  github-release:
+    name: GitHub release
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          # Extract the section for this version from CHANGELOG.md
+          CHANGELOG=$(awk "/^## \\[?${VERSION}\\]?/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md 2>/dev/null || echo "Release ${TAG}")
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="Release ${TAG}"
+          fi
+          {
+            echo "body<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.body }}
+          generate_release_notes: true
