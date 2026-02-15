@@ -5,7 +5,7 @@ A pure Rust multi-architecture assembly engine for offensive security.
 [![Crates.io](https://img.shields.io/crates/v/asm-rs.svg)](https://crates.io/crates/asm-rs)
 [![docs.rs](https://docs.rs/asm-rs/badge.svg)](https://docs.rs/asm-rs)
 [![CI](https://github.com/hupe1980/asm-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/hupe1980/asm-rs/actions/workflows/ci.yml)
-[![License](https://img.shields.io/crates/l/asm-rs.svg)](LICENSE-MIT)
+[![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE-MIT)
 
 [📖 Documentation](https://hupe1980.github.io/asm-rs/) · [📚 API Reference](https://docs.rs/asm-rs) · [📦 Crate](https://crates.io/crates/asm-rs)
 
