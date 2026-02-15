@@ -25,7 +25,7 @@ checksum = "5192cca8006f1fd4f7237516f40fa183bb07f8fbdfedaa0036de5ea9b0b45e78"
 
 [[package]]
 name = "asm-rs"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bad64",
  "criterion",
@@ -42,7 +42,7 @@ dependencies = [
 
 [[package]]
 name = "asm-rs-macros"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "asm-rs",
 ]

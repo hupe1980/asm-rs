@@ -14,4 +14,4 @@ repository.workspace = true
 proc-macro = true
 
 [dependencies]
-asm-rs = { version = "0.1.0", path = "../asm-rs", default-features = true }
+asm-rs = { version = "0.1.1", path = "../asm-rs", default-features = true }
