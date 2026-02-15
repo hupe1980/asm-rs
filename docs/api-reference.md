@@ -1,14 +1,11 @@
 ---
 layout: default
 title: API Reference
-nav_order: 6
 ---
 
 # API Reference
-{: .fs-8 }
 
 Complete reference for the asm-rs public API.
-{: .fs-5 .fw-300 }
 
 For auto-generated Rust API docs, see [docs.rs/asm-rs](https://docs.rs/asm-rs).
 

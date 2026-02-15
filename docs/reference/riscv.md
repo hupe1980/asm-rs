@@ -1,16 +1,12 @@
 ---
 layout: default
 title: RISC-V
-parent: ISA Reference
-nav_order: 5
 ---
 
 # RISC-V Instruction Reference
-{: .fs-8 }
 
 Complete reference for all RISC-V instructions supported by asm-rs,
 covering RV32I/RV64I base ISAs and the M, A, F, D, V, and C extensions.
-{: .fs-5 .fw-300 }
 
 ---
 
@@ -71,7 +67,6 @@ bltu  rs1, rs2, label          # Branch if less than (unsigned)
 bgeu  rs1, rs2, label          # Branch if greater or equal (unsigned)
 ```
 
-{: .note }
 > B-type branches automatically relax from 4-byte short form (±4 KiB) to
 > 8-byte long form (±1 MiB) using inverted-branch + JAL pair.
 
@@ -308,7 +303,6 @@ sequence using LUI/ADDI/SLLI:
 li    a0, 0xDEADBEEFCAFEBABE   # Up to 8 instructions (32 bytes)
 ```
 
-{: .note }
 > The `li` decomposition correctly handles sign-extension edge cases
 > (e.g., `li a0, 0x80000000` produces positive 2^31 on RV64).
 

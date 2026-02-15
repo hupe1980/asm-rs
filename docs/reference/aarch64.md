@@ -1,16 +1,12 @@
 ---
 layout: default
 title: AArch64
-parent: ISA Reference
-nav_order: 2
 ---
 
 # AArch64 (ARM64) Instruction Reference
-{: .fs-8 }
 
 Complete reference for all AArch64 instructions supported by asm-rs,
 including NEON (AdvSIMD) and SVE extensions.
-{: .fs-5 .fw-300 }
 
 ---
 
@@ -100,7 +96,6 @@ tbz   x0, #31, label          // Test bit and branch if zero
 tbnz  x0, #0, label           // Test bit and branch if not zero
 ```
 
-{: .note }
 > `B.cond`, `CBZ`/`CBNZ`, and `TBZ`/`TBNZ` support automatic branch relaxation:
 > instructions widen to inverted-condition + unconditional `B` pairs when the target
 > exceeds the direct offset range.
@@ -112,7 +107,6 @@ adr   x0, label               // Load PC-relative address (±1 MB)
 adrp  x0, label               // Load page address (±4 GB)
 ```
 
-{: .note }
 > `ADR` relaxes to `ADRP` + `ADD` pair (8 bytes, ±4 GB) when target exceeds ±1 MB.
 
 ---
@@ -177,7 +171,6 @@ ands  x0, x1, #0xFF           // AND and set flags
 tst   x0, #0xFF               // Test with bitmask immediate
 ```
 
-{: .note }
 > AArch64 bitmask immediates use a special N:immr:imms encoding scheme
 > that allows a wide variety of repeating bit patterns. Not all arbitrary
 > 64-bit constants can be encoded as bitmask immediates.

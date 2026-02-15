@@ -1,15 +1,11 @@
 ---
 layout: default
 title: Thumb
-parent: ISA Reference
-nav_order: 4
 ---
 
 # Thumb / Thumb-2 (T32) Instruction Reference
-{: .fs-8 }
 
 Complete reference for all Thumb and Thumb-2 instructions supported by asm-rs.
-{: .fs-5 .fw-300 }
 
 See also: [ARM32 Reference]({{ site.baseurl }}/reference/arm32).
 
@@ -160,7 +156,6 @@ and.w r0, r1, r2              @ Wide AND
 orr.w r0, r1, r2              @ Wide OR
 ```
 
-{: .note }
 > Thumb-2 uses a modified immediate encoding that supports a wider range of
 > constants than Thumb-1's limited immediate fields.
 
@@ -219,6 +214,5 @@ is out of range (Szymanski algorithm).
 .thumb_func                    @ Mark next label as Thumb function (sets LSB)
 ```
 
-{: .tip }
 > `.thumb_func` sets the least significant bit on the label address,
 > which is required for correct `BX`/`BLX` interworking.

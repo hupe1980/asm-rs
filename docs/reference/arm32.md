@@ -1,15 +1,11 @@
 ---
 layout: default
 title: ARM32
-parent: ISA Reference
-nav_order: 3
 ---
 
 # ARM32 (A32) Instruction Reference
-{: .fs-8 }
 
 Complete reference for all ARM32 instructions supported by asm-rs.
-{: .fs-5 .fw-300 }
 
 See also: [Thumb/Thumb-2 Reference]({{ site.baseurl }}/reference/thumb).
 
@@ -97,7 +93,6 @@ movw  r0, #0x1234             @ Move 16-bit immediate (low halfword)
 movt  r0, #0x5678             @ Move top halfword
 ```
 
-{: .note }
 > `mov r0, #large` with a non-encodable immediate automatically emits a
 > MOVW+MOVT pair to load the full 32-bit value.
 

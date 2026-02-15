@@ -1,14 +1,11 @@
 ---
 layout: default
 title: Configuration
-nav_order: 4
 ---
 
 # Configuration
-{: .fs-8 }
 
 Cargo features, runtime options, and build configuration for asm-rs.
-{: .fs-5 .fw-300 }
 
 ---
 

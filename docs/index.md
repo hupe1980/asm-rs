@@ -1,18 +1,15 @@
 ---
 layout: default
 title: Home
-nav_order: 1
 permalink: /
 ---
 
 # asm-rs
-{: .fs-9 .fw-700 }
 
 A pure Rust multi-architecture assembly engine for offensive security.
-{: .fs-6 .fw-300 }
 
-[Get Started]({{ site.baseurl }}/getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[View on GitHub](https://github.com/hupe1980/asm-rs){: .btn .fs-5 .mb-4 .mb-md-0 }
+[Get Started]({{ site.baseurl }}/getting-started)
+[View on GitHub](https://github.com/hupe1980/asm-rs)
 
 ---
 
@@ -20,7 +17,6 @@ A pure Rust multi-architecture assembly engine for offensive security.
 
 **asm-rs** is a pure Rust assembler that turns assembly source text into machine code bytes at runtime (or compile time via proc-macros). It supports multiple architectures, requires zero `unsafe` code, and works anywhere Rust does — including `no_std` and WebAssembly.
 
-{: .note }
 > Designed for offensive security: shellcode generation, exploit compilers, JIT engines, and security tooling.
 
 ## Key Features

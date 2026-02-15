@@ -1,15 +1,11 @@
 ---
 layout: default
 title: ISA Reference
-nav_order: 5
-has_children: true
 ---
 
 # Instruction Set Architecture Reference
-{: .fs-8 }
 
 Complete instruction references for each supported architecture.
-{: .fs-5 .fw-300 }
 
 ---
 

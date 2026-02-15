@@ -1,14 +1,11 @@
 ---
 layout: default
 title: Getting Started
-nav_order: 2
 ---
 
 # Getting Started
-{: .fs-8 }
 
 Get up and running with asm-rs in minutes.
-{: .fs-5 .fw-300 }
 
 ---
 

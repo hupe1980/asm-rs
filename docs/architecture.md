@@ -1,15 +1,12 @@
 ---
 layout: default
 title: Architecture
-nav_order: 3
 ---
 
 # Architecture Guide
-{: .fs-8 }
 
 Deep dive into the asm-rs assembler pipeline, module responsibilities,
 encoding architecture, and testing strategy.
-{: .fs-5 .fw-300 }
 
 ---
 
