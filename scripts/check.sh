@@ -3,7 +3,7 @@
 #
 # Usage:
 #   ./scripts/check.sh          # run all checks
-#   ./scripts/check.sh --quick  # skip slow checks (coverage, WASM, MSRV)
+#   ./scripts/check.sh --quick  # skip slow checks (coverage, MSRV)
 #
 set -euo pipefail
 
@@ -21,7 +21,7 @@ for arg in "$@"; do
     --quick|-q) QUICK=true ;;
     --help|-h)
       echo "Usage: $0 [--quick]"
-      echo "  --quick, -q   Skip slow checks (coverage, WASM, MSRV, no_std)"
+      echo "  --quick, -q   Skip slow checks (coverage, MSRV)"
       exit 0
       ;;
   esac
@@ -40,6 +40,10 @@ fail() {
   FAILED+=("$1")
 }
 
+skip() {
+  echo -e "  ${YELLOW}⊘ $1${RESET}"
+}
+
 run_check() {
   local name="$1"
   shift
@@ -51,6 +55,17 @@ run_check() {
   fi
 }
 
+ensure_target() {
+  local target="$1"
+  if ! rustup target list --installed | grep -q "$target"; then
+    echo -e "  ${YELLOW}Installing target $target...${RESET}"
+    rustup target add "$target"
+  fi
+}
+
+# ── Match CI: RUSTFLAGS=-Dwarnings ─────────────────────────
+export RUSTFLAGS="${RUSTFLAGS:--Dwarnings}"
+
 # ── Format ─────────────────────────────────────────────────
 run_check "rustfmt" cargo fmt --all -- --check
 
@@ -59,6 +74,40 @@ run_check "clippy" cargo clippy --workspace --all-features -- -D warnings
 
 # ── Tests ──────────────────────────────────────────────────
 run_check "tests" cargo test --workspace --all-features
+
+# ── no_std build ───────────────────────────────────────────
+step "no_std build"
+ensure_target thumbv7em-none-eabihf
+if cargo build -p asm-rs --no-default-features \
+    --features "x86,x86_64,arm,aarch64,riscv" \
+    --target thumbv7em-none-eabihf; then
+  pass "no_std build"
+else
+  fail "no_std build"
+fi
+
+# ── WASM build ─────────────────────────────────────────────
+step "WASM build"
+ensure_target wasm32-unknown-unknown
+if cargo check -p asm-rs --target wasm32-unknown-unknown --all-features; then
+  pass "WASM build"
+else
+  fail "WASM build"
+fi
+
+# ── WASM tests ─────────────────────────────────────────────
+step "WASM tests"
+if command -v wasm-bindgen &>/dev/null; then
+  if WASM_BINDGEN_TEST_ONLY_NODE=1 \
+      cargo test -p asm-rs --target wasm32-unknown-unknown \
+      --test wasm_integration --features "x86,x86_64,arm,aarch64,riscv"; then
+    pass "WASM tests"
+  else
+    fail "WASM tests"
+  fi
+else
+  skip "skipped (install: cargo install wasm-bindgen-cli)"
+fi
 
 # ── Documentation ──────────────────────────────────────────
 run_check "docs" env RUSTDOCFLAGS="-D warnings" cargo doc --workspace --all-features --no-deps
@@ -80,7 +129,7 @@ FEATURE_SETS=(
 step "feature subsets"
 ALL_FEATURES_OK=true
 for features in "${FEATURE_SETS[@]}"; do
-  if cargo check -p asm-rs --no-default-features --features "std,$features" 2>/dev/null; then
+  if cargo check -p asm-rs --no-default-features --features "std,$features"; then
     echo -e "  ${GREEN}✓${RESET} $features"
   else
     echo -e "  ${RED}✗${RESET} $features"
@@ -99,45 +148,38 @@ run_check "publish dry-run" cargo publish -p asm-rs --dry-run --allow-dirty
 # ── Slow checks (skip with --quick) ───────────────────────
 if ! $QUICK; then
 
-  # ── no_std build ───────────────────────────────────────
-  if rustup target list --installed | grep -q thumbv7em-none-eabihf; then
-    run_check "no_std build" cargo build -p asm-rs --no-default-features \
-      --features "x86,x86_64,arm,aarch64,riscv" --target thumbv7em-none-eabihf
-  else
-    step "no_std build"
-    echo -e "  ${YELLOW}⊘ skipped (install target: rustup target add thumbv7em-none-eabihf)${RESET}"
-  fi
-
-  # ── WASM tests ─────────────────────────────────────────
-  if rustup target list --installed | grep -q wasm32-unknown-unknown && command -v wasm-bindgen &>/dev/null; then
-    run_check "WASM tests" env WASM_BINDGEN_TEST_ONLY_NODE=1 \
-      cargo test -p asm-rs --target wasm32-unknown-unknown \
-      --test wasm_integration --features "x86,x86_64,arm,aarch64,riscv"
-  else
-    step "WASM tests"
-    echo -e "  ${YELLOW}⊘ skipped (need: rustup target add wasm32-unknown-unknown && cargo install wasm-bindgen-cli)${RESET}"
-  fi
-
   # ── MSRV ───────────────────────────────────────────────
+  step "MSRV (1.75)"
   if rustup toolchain list | grep -q "1\.75"; then
-    run_check "MSRV (1.75)" cargo +1.75 check --workspace --all-features
+    if cargo +1.75 check --workspace --all-features; then
+      pass "MSRV (1.75)"
+    else
+      fail "MSRV (1.75)"
+    fi
   elif rustup toolchain list | grep -q "1\.75\.0"; then
-    run_check "MSRV (1.75)" cargo +1.75.0 check --workspace --all-features
+    if cargo +1.75.0 check --workspace --all-features; then
+      pass "MSRV (1.75)"
+    else
+      fail "MSRV (1.75)"
+    fi
   else
-    step "MSRV (1.75)"
-    echo -e "  ${YELLOW}⊘ skipped (install: rustup toolchain install 1.75)${RESET}"
+    skip "skipped (install: rustup toolchain install 1.75)"
   fi
 
   # ── Coverage ───────────────────────────────────────────
+  step "coverage"
   if command -v cargo-llvm-cov &>/dev/null; then
-    run_check "coverage (≥80%)" cargo llvm-cov --workspace --all-features --fail-under-lines 80
+    if cargo llvm-cov --workspace --all-features --fail-under-lines 80; then
+      pass "coverage (≥80%)"
+    else
+      fail "coverage (≥80%)"
+    fi
   else
-    step "coverage"
-    echo -e "  ${YELLOW}⊘ skipped (install: cargo install cargo-llvm-cov)${RESET}"
+    skip "skipped (install: cargo install cargo-llvm-cov)"
   fi
 
 else
-  echo -e "\n${YELLOW}--quick: skipping no_std, WASM, MSRV, coverage${RESET}"
+  echo -e "\n${YELLOW}--quick: skipping MSRV, coverage${RESET}"
 fi
 
 # ── Summary ────────────────────────────────────────────────

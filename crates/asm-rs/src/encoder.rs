@@ -9,6 +9,7 @@
 // pragmatic choice over wrapping parameters in a struct that adds no clarity.
 #![allow(clippy::too_many_arguments)]
 
+#[allow(unused_imports)]
 use alloc::string::String;
 #[allow(unused_imports)]
 use alloc::string::ToString;

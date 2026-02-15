@@ -265,7 +265,6 @@ impl AssemblyResult {
 
             let chunk = &bytes[i..chunk_end];
             let hex: String = chunk.iter().fold(String::new(), |mut acc, b| {
-                use core::fmt::Write;
                 let _ = write!(acc, "{:02X}", b);
                 acc
             });
@@ -1181,8 +1180,6 @@ impl Assembler {
     /// Duplicate values with the same size are deduplicated to share a single
     /// pool entry.
     fn transform_literal_pool_operands(&mut self, instr: &mut Instruction) {
-        use crate::ir::Operand;
-
         // Determine pool entry size from the first register operand.
         // - ARM registers → always 4 bytes (32-bit)
         // - AArch64 X-registers → 8 bytes, W-registers → 4 bytes
@@ -1269,7 +1266,6 @@ impl Assembler {
     /// Also resolves constants inside `Operand::Expression` trees and collapses
     /// fully-numeric expressions to `Operand::Immediate`.
     fn resolve_constants_in_instruction(&self, instr: &mut Instruction) {
-        use crate::ir::Operand;
         for op in &mut instr.operands {
             match op {
                 Operand::Label(name) => {

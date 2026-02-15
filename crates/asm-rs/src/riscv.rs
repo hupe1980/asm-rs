@@ -31,6 +31,7 @@
 //! ```
 
 use alloc::string::String;
+use alloc::string::ToString;
 
 use crate::encoder::{EncodedInstr, InstrBytes, RelocKind, Relocation};
 use crate::error::{AsmError, Span};

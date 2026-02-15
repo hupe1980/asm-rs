@@ -9,6 +9,7 @@ use alloc::collections::BTreeMap;
 #[allow(unused_imports)]
 use alloc::format;
 use alloc::string::String;
+use alloc::string::ToString;
 #[allow(unused_imports)]
 use alloc::vec;
 use alloc::vec::Vec;
